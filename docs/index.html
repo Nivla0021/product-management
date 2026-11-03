@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A simple, private place to manage your product names and prices."
+    />
+    <meta name="color-scheme" content="light" />
+    <title>Product desk · Product manager</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./config.js" defer></script>
+    <script src="./app.js" type="module"></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="./"
+        ><span class="brand-mark" aria-hidden="true">p.</span> product desk</a
+      >
+      <div class="workspace-label">YOUR WORKSPACE</div>
+      <div class="nav-item">
+        <span aria-hidden="true">▦</span> Products <span class="nav-dot"></span>
+      </div>
+      <div class="sidebar-bottom">
+        <span class="avatar">A</span>
+        <div>Admin workspace<small>Simple. Organized. Yours.</small></div>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <span
+          >Workspace <span class="slash">/</span>
+          <strong>Products</strong></span
+        ><span class="private-badge">● Private workspace</span>
+      </header>
+      <div class="content">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">A LITTLE ORDER, EVERY DAY</p>
+            <h1>Your products.</h1>
+            <p class="subtitle">
+              One place for your products and their prices.
+            </p>
+          </div>
+          <button id="lock" class="button secondary" hidden>
+            Lock workspace
+          </button>
+        </div>
+        <div id="setup" class="notice setup" hidden>
+          <strong>A quick setup, then you’re ready.</strong>
+          <p>
+            Add your deployed Neon API URL to <code>docs/config.js</code>. The
+            README walks you through connecting your database and publishing to
+            GitHub Pages.
+          </p>
+        </div>
+        <section
+          id="unlock-panel"
+          class="unlock card"
+          aria-labelledby="unlock-title"
+        >
+          <div>
+            <span class="section-kicker">JUST FOR YOU</span>
+            <h2 id="unlock-title">Unlock your workspace</h2>
+            <p>Enter your admin password to manage your products.</p>
+          </div>
+          <form id="unlock-form">
+            <label for="password">Admin password</label>
+            <div class="password-row">
+              <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Enter your password"
+              /><button class="button primary" id="unlock-button">
+                Unlock <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <small
+              >Your password stays in this tab until you lock or reload.</small
+            >
+          </form>
+        </section>
+        <div
+          id="message"
+          role="status"
+          aria-live="polite"
+          class="message"
+        ></div>
+        <div class="workspace-grid">
+          <section class="card editor" aria-labelledby="form-title">
+            <div class="card-heading">
+              <span class="section-kicker">THE DETAILS</span>
+              <h2 id="form-title">Add a product</h2>
+              <p>A name and a price. That’s all you need.</p>
+            </div>
+            <form id="product-form">
+              <fieldset id="product-fields" disabled>
+                <label for="name">Product name</label
+                ><input
+                  id="name"
+                  name="name"
+                  maxlength="160"
+                  required
+                  placeholder="e.g. Arabica coffee beans"
+                /><label for="price"
+                  >Price <span class="label-hint">PHP</span></label
+                >
+                <div class="price-input">
+                  <span aria-hidden="true">₱</span
+                  ><input
+                    id="price"
+                    name="price"
+                    type="text"
+                    inputmode="decimal"
+                    required
+                    placeholder="0.00"
+                    aria-describedby="price-hint"
+                  />
+                </div>
+                <small id="price-hint"
+                  >Philippine pesos, up to 2 decimal places.</small
+                ><button id="save" class="button primary full" type="submit">
+                  <span aria-hidden="true">＋</span> Add product</button
+                ><button
+                  id="cancel"
+                  class="button secondary full"
+                  type="button"
+                  hidden
+                >
+                  Cancel editing
+                </button>
+              </fieldset>
+            </form>
+            <div class="editor-note">
+              <span aria-hidden="true">↗</span> Less admin. More room for your
+              next idea.
+            </div>
+          </section>
+          <section class="card catalog" aria-labelledby="catalog-title">
+            <div class="catalog-heading">
+              <div>
+                <span class="section-kicker">YOUR COLLECTION</span>
+                <h2 id="catalog-title">
+                  Product list <span id="count" class="count">0</span>
+                </h2>
+              </div>
+              <button id="refresh" class="button secondary compact" disabled>
+                ↻ Reload
+              </button>
+            </div>
+            <div id="empty" class="empty">
+              <span class="empty-icon" aria-hidden="true">▦</span>
+              <h3>Your next product starts here</h3>
+              <p id="empty-description">
+                Unlock your workspace to see your products.
+              </p>
+            </div>
+            <div id="table-wrap" class="table-wrap" hidden>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Product name</th>
+                    <th scope="col" class="price-col">Price</th>
+                    <th scope="col"><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="products"></tbody>
+              </table>
+            </div>
+            <div class="catalog-footer">
+              <span>Keep the essentials in view.</span
+              ><span>Currency: PHP ₱</span>
+            </div>
+          </section>
+        </div>
+        <footer class="page-footer">
+          <span>Product desk</span
+          ><span>A simpler space to keep things together.</span>
+        </footer>
+      </div>
+    </main>
+    <noscript
+      ><p class="notice">
+        Enable JavaScript to use the product manager.
+      </p></noscript
+    >
+  </body>
+</html>
