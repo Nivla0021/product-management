@@ -189,3 +189,45 @@ test("wrong passwords and network failures display errors and keep the workspace
   assert.match(app.get("message").textContent, /Could not reach the API/);
   assert.equal(app.get("unlock-button").disabled, false);
 });
+
+test("search filters names without requests, handles no matches, and clears on lock", async () => {
+  const app = setup();
+  assert.equal(app.get("search").disabled, true);
+  app.respond(() =>
+    Response.json({
+      products: [
+        { ...sample, name: "Arabica Coffee" },
+        { ...sample, id: "second", name: "Green Tea" },
+      ],
+    }),
+  );
+  app.get("password").value = "test-only";
+  app.get("unlock-form").trigger("submit");
+  await app.settle();
+  assert.equal(app.get("search").disabled, false);
+  const requests = app.calls.length;
+  app.get("search").value = "  COFF  ";
+  app.get("search").trigger("input");
+  assert.equal(app.get("products").children.length, 1);
+  assert.equal(
+    app.get("products").children[0].children[0].textContent,
+    "Arabica Coffee",
+  );
+  assert.equal(app.get("count").textContent, "1 of 2");
+  app.action(0).trigger("click");
+  assert.equal(app.get("name").value, "Arabica Coffee");
+  app.get("search").value = "no match";
+  app.get("search").trigger("input");
+  assert.equal(app.get("table-wrap").hidden, true);
+  assert.equal(app.get("empty-title").textContent, "No matching products");
+  assert.equal(app.get("count").textContent, "0 of 2");
+  app.get("search").value = "  ";
+  app.get("search").trigger("input");
+  assert.equal(app.get("products").children.length, 2);
+  assert.equal(app.get("table-wrap").hidden, false);
+  assert.equal(app.calls.length, requests);
+  app.get("search").value = "coffee";
+  app.get("lock").trigger("click");
+  assert.equal(app.get("search").value, "");
+  assert.equal(app.get("search").disabled, true);
+});

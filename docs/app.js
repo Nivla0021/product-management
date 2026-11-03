@@ -33,6 +33,7 @@ function message(text, kind = "") {
 function updateControls() {
   $("product-fields").disabled = !password || busy;
   $("refresh").disabled = !password || busy;
+  $("search").disabled = !password;
   $("unlock-button").disabled = !apiUrl || busy;
   $("password").disabled = !apiUrl || busy;
   $("lock").disabled = busy;
@@ -90,22 +91,33 @@ function lock() {
   password = "";
   products = [];
   $("password").value = "";
+  $("search").value = "";
   // Keep unsaved product details available when a password must be re-entered.
   render();
   updateControls();
 }
 
 function render() {
+  const search = $("search").value.trim().toLowerCase();
+  const visible = products.filter((product) =>
+    product.name.toLowerCase().includes(search),
+  );
   $("products").replaceChildren();
-  $("count").textContent = products.length;
-  $("empty").hidden = products.length > 0;
-  $("table-wrap").hidden = products.length === 0;
+  $("count").textContent = search
+    ? `${visible.length} of ${products.length}`
+    : products.length;
+  $("empty").hidden = visible.length > 0;
+  $("table-wrap").hidden = visible.length === 0;
+  const noMatches = Boolean(search && products.length);
+  $("empty-title").textContent = noMatches
+    ? "No matching products"
+    : "Your next product starts here";
   $("empty-description").textContent = password
-    ? "Add your first product using the form."
+    ? noMatches
+      ? "Try a different product name or clear the search."
+      : "Add your first product using the form."
     : "Unlock your workspace to see your products.";
-  for (const product of [...products].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  )) {
+  for (const product of visible.sort((a, b) => a.name.localeCompare(b.name))) {
     const row = document.createElement("tr");
     const name = document.createElement("td");
     name.textContent = product.name;
@@ -220,6 +232,7 @@ $("refresh").addEventListener("click", () =>
     message("Product list is up to date.", "success");
   }),
 );
+$("search").addEventListener("input", render);
 $("cancel").addEventListener("click", () => {
   resetEditor();
   message("Editing canceled.");

@@ -145,16 +145,34 @@
               <div>
                 <span class="section-kicker">YOUR COLLECTION</span>
                 <h2 id="catalog-title">
-                  Product list <span id="count" class="count">0</span>
+                  Product list
+                  <span
+                    id="count"
+                    class="count"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    >0</span
+                  >
                 </h2>
               </div>
               <button id="refresh" class="button secondary compact" disabled>
                 ↻ Reload
               </button>
             </div>
+            <div class="catalog-search">
+              <label for="search">Search products</label>
+              <input
+                id="search"
+                type="search"
+                placeholder="Search by product name…"
+                autocomplete="off"
+                aria-controls="products"
+                disabled
+              />
+            </div>
             <div id="empty" class="empty">
               <span class="empty-icon" aria-hidden="true">▦</span>
-              <h3>Your next product starts here</h3>
+              <h3 id="empty-title">Your next product starts here</h3>
               <p id="empty-description">
                 Unlock your workspace to see your products.
               </p>

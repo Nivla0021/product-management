@@ -356,6 +356,10 @@ input:disabled {
   align-items: center;
   gap: 9px;
 }
+.catalog-search {
+  padding: 18px 25px;
+  border-bottom: 1px solid var(--line);
+}
 .count {
   font-size: 10px;
   background: #eff2fb;
